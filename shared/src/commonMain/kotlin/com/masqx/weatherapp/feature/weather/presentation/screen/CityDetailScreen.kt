@@ -11,7 +11,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.masqx.weatherapp.core.navigation.Navigator
+import com.masqx.weatherapp.core.service.navigation.NavigationService
 import com.masqx.weatherapp.feature.weather.domain.Degree
 import com.masqx.weatherapp.feature.weather.domain.WeatherDaily
 import com.masqx.weatherapp.feature.weather.domain.defaultCities
@@ -24,7 +24,7 @@ private val mockWeatherDaily = WeatherDaily(temperature = Degree(20), weatherCod
 @Composable
 fun CityDetailScreen(
     cityId: String,
-    navigator: Navigator = koinInject(),
+    navigationService: NavigationService = koinInject(),
 ) {
     val city = defaultCities.firstOrNull { it.id == cityId }
 
@@ -33,7 +33,7 @@ fun CityDetailScreen(
             TopAppBar(
                 title = { Text(city?.name.orEmpty()) },
                 navigationIcon = {
-                    IconButton(onClick = { navigator.popBackStack() }) {
+                    IconButton(onClick = { navigationService.popBackStack() }) {
                         Text("←")
                     }
                 },

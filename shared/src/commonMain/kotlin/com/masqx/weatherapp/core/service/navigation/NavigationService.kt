@@ -1,4 +1,4 @@
-package com.masqx.weatherapp.core.navigation
+package com.masqx.weatherapp.core.service.navigation
 
 import androidx.navigation.NavHostController
 
@@ -7,7 +7,7 @@ import androidx.navigation.NavHostController
  * Позволяет вызывать навигацию из любого места (вьюмодели, репозитории), не таская NavController руками.
  * [controller] выставляется один раз при монтировании NavHost ([bind]).
  */
-class Navigator {
+class NavigationService {
     private var controller: NavHostController? = null
 
     fun bind(navHostController: NavHostController) {
