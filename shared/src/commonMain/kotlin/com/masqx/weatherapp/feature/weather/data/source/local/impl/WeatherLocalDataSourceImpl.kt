@@ -1,6 +1,6 @@
-package com.masqx.weatherapp.feature.weather.data.dataSource.local.impl
+package com.masqx.weatherapp.feature.weather.data.source.local.impl
 
-import com.masqx.weatherapp.feature.weather.data.dataSource.local.`interface`.WeatherLocalDataSource
+import com.masqx.weatherapp.feature.weather.data.source.local.`interface`.WeatherLocalDataSource
 import com.masqx.weatherapp.feature.weather.domain.CityWeatherShortInfo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

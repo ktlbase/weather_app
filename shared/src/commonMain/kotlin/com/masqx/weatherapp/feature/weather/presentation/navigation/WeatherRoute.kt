@@ -15,4 +15,8 @@ sealed interface WeatherRoute {
         override val route = "city_detail/{$ARG_CITY_ID}"
         fun createRoute(cityId: String) = "city_detail/$cityId"
     }
+
+    data object CitySearch : WeatherRoute {
+        override val route = "city_search"
+    }
 }

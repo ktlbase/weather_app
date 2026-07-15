@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.masqx.weatherapp.core.service.navigation.NavigationService
+import com.masqx.weatherapp.feature.city.domain.entity.CityId
 import com.masqx.weatherapp.feature.weather.domain.Degree
 import com.masqx.weatherapp.feature.weather.domain.WeatherDaily
 import com.masqx.weatherapp.feature.weather.domain.defaultCities
@@ -26,7 +27,7 @@ fun CityDetailScreen(
     cityId: String,
     navigationService: NavigationService = koinInject(),
 ) {
-    val city = defaultCities.firstOrNull { it.id == cityId }
+    val city = defaultCities.firstOrNull { it.id == CityId(cityId) }
 
     Scaffold(
         topBar = {

@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.savedstate.read
 import com.masqx.weatherapp.core.service.navigation.NavigationService
+import com.masqx.weatherapp.feature.city.presentation.screen.CitySearchScreen
 import com.masqx.weatherapp.feature.weather.presentation.screen.CityDetailScreen
 import com.masqx.weatherapp.feature.weather.presentation.screen.CityListScreen
 import org.koin.compose.koinInject
@@ -33,6 +34,10 @@ fun WeatherNavHost(
     ) {
         composable(WeatherRoute.CityList.route) {
             CityListScreen()
+        }
+
+        composable(WeatherRoute.CitySearch.route) {
+            CitySearchScreen()
         }
 
         composable(WeatherRoute.CityDetail.route) { backStackEntry ->

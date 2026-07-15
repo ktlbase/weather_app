@@ -1,19 +1,8 @@
 package com.masqx.weatherapp.feature.weather.domain
 
+import com.masqx.weatherapp.feature.city.domain.entity.City
 import kotlin.jvm.JvmInline
 
-/** Город: id — уникальный ключ, name — отображаемое имя, geoPoint — координаты. */
-data class City(
-    val id: String,
-    val name: String,
-    val geoPoint: GeoPoint,
-)
-
-/** Координаты точки на карте (широта/долгота, градусы). */
-data class GeoPoint(
-    val latitude: Double,
-    val longitude: Double,
-)
 
 /** Температура в цельсиях. Валидирует диапазон [-273, 1000] (абс. ноль .. разумный максимум). */
 @JvmInline

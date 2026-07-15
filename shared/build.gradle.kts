@@ -76,7 +76,38 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
         }
+        getByName("androidHostTest") {
+            dependencies {
+                implementation(libs.kotlin.testJunit5)
+            }
+        }
+    }
+}
+
+// Integration tests (real network calls) are tagged @Tag("integration") and live in androidHostTest.
+// They're excluded from the regular `test`/`check` run and run separately via `integrationTest`.
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform {
+        if (name == "integrationTest") {
+            includeTags("integration")
+        } else {
+            excludeTags("integration")
+        }
+    }
+}
+
+tasks.register<Test>("integrationTest") {
+    group = "verification"
+    description = "Runs integration tests (real network calls) tagged @Tag(\"integration\")."
+    val hostTest = tasks.named<Test>("testAndroidHostTest").get()
+    testClassesDirs = hostTest.testClassesDirs
+    classpath = hostTest.classpath
+    testLogging {
+        events("passed", "skipped", "failed", "standard_out", "standard_error")
+        showStandardStreams = true
+        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
     }
 }
 

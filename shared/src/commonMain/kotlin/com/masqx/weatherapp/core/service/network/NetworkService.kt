@@ -2,7 +2,6 @@ package com.masqx.weatherapp.core.service.network
 
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
-import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.delete
@@ -11,6 +10,7 @@ import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
@@ -20,7 +20,7 @@ abstract class NetworkService(
     val baseUrl: String,
     extraPlugins: HttpClientConfig<*>.() -> Unit = {},
 ) {
-    val client = HttpClient {
+    private val client = HttpClient {
         install(ContentNegotiation) {
             json(
                 Json {
@@ -35,35 +35,35 @@ abstract class NetworkService(
         extraPlugins()
     }
 
-    suspend inline fun <reified T> get(
+    suspend fun get(
         path: String,
         params: Map<String, String> = emptyMap(),
-    ): T = client.get("$baseUrl$path") {
+    ): HttpResponse = client.get("$baseUrl$path") {
         params.forEach { (key, value) -> parameter(key, value) }
-    }.body()
+    }
 
-    suspend inline fun <reified T> post(
+    suspend fun post(
         path: String,
         body: Any? = null,
         params: Map<String, String> = emptyMap(),
-    ): T = client.post("$baseUrl$path") {
+    ): HttpResponse = client.post("$baseUrl$path") {
         params.forEach { (key, value) -> parameter(key, value) }
         if (body != null) setBody(body)
-    }.body()
+    }
 
-    suspend inline fun <reified T> put(
+    suspend fun put(
         path: String,
         body: Any? = null,
         params: Map<String, String> = emptyMap(),
-    ): T = client.put("$baseUrl$path") {
+    ): HttpResponse = client.put("$baseUrl$path") {
         params.forEach { (key, value) -> parameter(key, value) }
         if (body != null) setBody(body)
-    }.body()
+    }
 
-    suspend inline fun <reified T> delete(
+    suspend fun delete(
         path: String,
         params: Map<String, String> = emptyMap(),
-    ): T = client.delete("$baseUrl$path") {
+    ): HttpResponse = client.delete("$baseUrl$path") {
         params.forEach { (key, value) -> parameter(key, value) }
-    }.body()
+    }
 }

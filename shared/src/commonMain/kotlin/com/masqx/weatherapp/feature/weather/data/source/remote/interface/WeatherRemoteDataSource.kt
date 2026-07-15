@@ -1,6 +1,6 @@
-package com.masqx.weatherapp.feature.weather.data.dataSource.remote.`interface`
+package com.masqx.weatherapp.feature.weather.data.source.remote.`interface`
 
-import com.masqx.weatherapp.feature.weather.domain.City
+import com.masqx.weatherapp.feature.city.domain.entity.City
 import com.masqx.weatherapp.feature.weather.domain.CityWeatherShortInfo
 
 interface WeatherRemoteDataSource {

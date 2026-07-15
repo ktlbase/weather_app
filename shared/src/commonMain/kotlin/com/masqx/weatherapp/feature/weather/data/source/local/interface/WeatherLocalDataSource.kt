@@ -1,4 +1,4 @@
-package com.masqx.weatherapp.feature.weather.data.dataSource.local.`interface`
+package com.masqx.weatherapp.feature.weather.data.source.local.`interface`
 
 import com.masqx.weatherapp.feature.weather.domain.CityWeatherShortInfo
 import kotlinx.coroutines.flow.Flow
