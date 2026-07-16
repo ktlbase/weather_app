@@ -28,7 +28,7 @@ kotlin {
         }
     }
     
-    androidLibrary {
+    android {
        namespace = "com.masqx.weatherapp.shared"
        compileSdk = libs.versions.android.compileSdk.get().toInt()
        minSdk = libs.versions.android.minSdk.get().toInt()
@@ -58,6 +58,9 @@ kotlin {
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)
+            implementation(libs.compose.materialIconsCore)
+            implementation(libs.materialKolor)
+            implementation(libs.weatherIcons)
             implementation(libs.compose.ui)
             implementation(libs.compose.components.resources)
             implementation(libs.compose.uiToolingPreview)
@@ -72,6 +75,7 @@ kotlin {
             implementation(libs.ktor.serialization.kotlinxJson)
             implementation(libs.ktor.client.logging)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.kotlinx.datetime)
             implementation(libs.sqldelight.coroutines.extensions)
         }
         commonTest.dependencies {

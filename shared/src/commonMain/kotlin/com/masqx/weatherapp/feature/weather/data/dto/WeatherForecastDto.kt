@@ -9,8 +9,3 @@ data class WeatherForecastDto(
     @SerialName("current") val current: CurrentWeatherDto,
 )
 
-@Serializable
-data class CurrentWeatherDto(
-    @SerialName("temperature_2m") val temperature2m: Double,
-    @SerialName("weather_code") val weatherCode: Int,
-)

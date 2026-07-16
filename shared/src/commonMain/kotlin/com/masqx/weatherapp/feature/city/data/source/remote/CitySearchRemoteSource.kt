@@ -15,13 +15,13 @@ interface CitySearchRemoteSource {
 
 
 class CitySearchRemoteSourceImpl(
-    private val client: GeocodingNetworkService,
+    private val network: GeocodingNetworkService,
 ) : CitySearchRemoteSource {
     // The Ktor plugin config doesn't apply to manual decoding, so ignoreUnknownKeys is needed here too
     private val json = Json { ignoreUnknownKeys = true }
 
     override suspend fun search(query: String): List<CityDto> {
-        val response = client.get(
+        val response = network.get(
             "/search",
             params = mapOf(
                 "name" to query,

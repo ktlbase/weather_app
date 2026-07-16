@@ -3,7 +3,7 @@ package com.masqx.weatherapp.feature.weather.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.masqx.weatherapp.core.service.navigation.NavigationService
-import com.masqx.weatherapp.feature.weather.domain.CityWeatherShortInfo
+import com.masqx.weatherapp.feature.weather.domain.CityWeatherSummary
 import com.masqx.weatherapp.feature.weather.domain.defaultCities
 import com.masqx.weatherapp.feature.weather.domain.repository.WeatherRepository
 import com.masqx.weatherapp.feature.weather.presentation.navigation.WeatherRoute
@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class CityListUiState(
-    val cities: List<CityWeatherShortInfo> = emptyList(),
+    val cities: List<CityWeatherSummary> = emptyList(),
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
 )

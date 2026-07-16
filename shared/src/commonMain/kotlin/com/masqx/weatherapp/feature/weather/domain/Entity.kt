@@ -21,7 +21,8 @@ data class WeatherDaily(
 )
 
 /** Краткая инфа для списка/виджета: город + его текущая/дневная погода. */
-data class CityWeatherShortInfo(
+data class CityWeatherSummary(
     val city: City,
     val weatherDaily: WeatherDaily,
 )
+

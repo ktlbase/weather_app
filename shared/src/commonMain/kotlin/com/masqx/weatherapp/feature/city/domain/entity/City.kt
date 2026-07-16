@@ -6,10 +6,6 @@ import kotlin.jvm.JvmInline
 @JvmInline
 value class CityId(val value: String)
 
-/** Таймзона */
-@JvmInline
-value class Timezone(val value: String)
-
 /** Город */
 data class City(
     val id: CityId,

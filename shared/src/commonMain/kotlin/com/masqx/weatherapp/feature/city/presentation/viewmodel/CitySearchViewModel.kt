@@ -2,8 +2,8 @@ package com.masqx.weatherapp.feature.city.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.masqx.weatherapp.feature.city.domain.entity.City
 import com.masqx.weatherapp.feature.city.domain.repository.CitySearchRepository
+import com.masqx.weatherapp.feature.weather.domain.CityCurrentWeather
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,7 +20,7 @@ private val SEARCH_DEBOUNCE_MS = 400.milliseconds
 
 data class CitySearchUiState(
     val query: String = "",
-    val results: List<City> = emptyList(),
+    val results: List<CityCurrentWeather> = emptyList(),
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
 )

@@ -14,7 +14,7 @@ val cityModule = module {
     single { GeocodingNetworkService() }
 
     single<CitySearchRemoteSource> { CitySearchRemoteSourceImpl(get()) }
-    single<CitySearchRepository> { CitySearchRepositoryImpl(get()) }
+    single<CitySearchRepository> { CitySearchRepositoryImpl(get(), get()) }
 
     viewModel { CitySearchViewModel(get()) }
 }
