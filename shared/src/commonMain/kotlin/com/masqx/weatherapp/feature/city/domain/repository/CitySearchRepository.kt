@@ -1,0 +1,7 @@
+package com.masqx.weatherapp.feature.city.domain.repository
+
+import com.masqx.weatherapp.feature.weather.domain.CityCurrentWeather
+
+interface CitySearchRepository {
+    suspend fun search(query: String): Result<List<CityCurrentWeather>>
+}
