@@ -4,6 +4,7 @@ import com.masqx.weatherapp.feature.weather.data.mapper.toDomain
 import com.masqx.weatherapp.feature.weather.data.source.local.`interface`.WeatherLocalDataSource
 import com.masqx.weatherapp.feature.weather.data.source.remote.WeatherRemoteSource
 import com.masqx.weatherapp.feature.city.domain.entity.City
+import com.masqx.weatherapp.feature.weather.domain.CityWeatherDetail
 import com.masqx.weatherapp.feature.weather.domain.CityWeatherSummary
 import com.masqx.weatherapp.feature.weather.domain.WeatherDaily
 import com.masqx.weatherapp.feature.weather.domain.repository.WeatherRepository
@@ -34,6 +35,17 @@ class WeatherRepositoryImpl(
             }
             localDataSource.saveCitiesShort(fresh)
             Result.success(Unit)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+
+    override suspend fun getWeatherDetail(city: City): Result<CityWeatherDetail> =
+        try {
+            Result.success(
+                remoteSource.getWeatherDetail(city.location).toDomain(city.timezone),
+            )
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {

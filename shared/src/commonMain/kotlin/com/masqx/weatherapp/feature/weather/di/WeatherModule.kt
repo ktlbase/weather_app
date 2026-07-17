@@ -7,6 +7,7 @@ import com.masqx.weatherapp.feature.weather.data.repository.WeatherRepositoryImp
 import com.masqx.weatherapp.feature.weather.data.source.remote.WeatherRemoteSource
 import com.masqx.weatherapp.feature.weather.data.source.remote.WeatherRemoteSourceImpl
 import com.masqx.weatherapp.feature.weather.domain.repository.WeatherRepository
+import com.masqx.weatherapp.feature.weather.presentation.viewmodel.CityDetailViewModel
 import com.masqx.weatherapp.feature.weather.presentation.viewmodel.CityListViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -21,4 +22,5 @@ val weatherModule = module {
     single<WeatherRepository> { WeatherRepositoryImpl(get(), get()) }
 
     viewModel { CityListViewModel(get(), get()) }
+    viewModel { params -> CityDetailViewModel(city = params.get(), repository = get()) }
 }

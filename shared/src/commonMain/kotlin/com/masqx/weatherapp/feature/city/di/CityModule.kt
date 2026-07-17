@@ -16,5 +16,5 @@ val cityModule = module {
     single<CitySearchRemoteSource> { CitySearchRemoteSourceImpl(get()) }
     single<CitySearchRepository> { CitySearchRepositoryImpl(get(), get()) }
 
-    viewModel { CitySearchViewModel(get()) }
+    viewModel { CitySearchViewModel(get(), get()) }
 }

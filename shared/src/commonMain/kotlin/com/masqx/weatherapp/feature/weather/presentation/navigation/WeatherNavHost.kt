@@ -1,5 +1,6 @@
 package com.masqx.weatherapp.feature.weather.presentation.navigation
 
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.navigation.NavHostController
@@ -8,6 +9,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.savedstate.read
 import com.masqx.weatherapp.core.service.navigation.NavigationService
+import com.masqx.weatherapp.feature.city.domain.entity.City
+import com.masqx.weatherapp.feature.city.domain.entity.CityId
+import com.masqx.weatherapp.feature.city.domain.entity.Location
+import com.masqx.weatherapp.feature.city.domain.entity.Timezone
 import com.masqx.weatherapp.feature.city.presentation.screen.CitySearchScreen
 import com.masqx.weatherapp.feature.weather.presentation.screen.CityDetailScreen
 import com.masqx.weatherapp.feature.weather.presentation.screen.CityListScreen
@@ -41,10 +46,33 @@ fun WeatherNavHost(
         }
 
         composable(WeatherRoute.CityDetail.route) { backStackEntry ->
-            val cityId = backStackEntry.arguments?.read {
-                getStringOrNull(WeatherRoute.CityDetail.ARG_CITY_ID)
+            val city = backStackEntry.arguments?.read {
+                val cityId = getStringOrNull(WeatherRoute.CityDetail.ARG_CITY_ID)
+                val name = getStringOrNull(WeatherRoute.CityDetail.ARG_NAME)
+                val lat = getStringOrNull(WeatherRoute.CityDetail.ARG_LAT)?.toDoubleOrNull()
+                val lon = getStringOrNull(WeatherRoute.CityDetail.ARG_LON)?.toDoubleOrNull()
+                val tz = getStringOrNull(WeatherRoute.CityDetail.ARG_TIMEZONE)
+
+                if (cityId == null || name == null || lat == null || lon == null || tz == null) {
+                    null
+                } else {
+                    City(
+                        id = CityId(cityId),
+                        name = name,
+                        location = Location(latitude = lat, longitude = lon),
+                        country = getStringOrNull(WeatherRoute.CityDetail.ARG_COUNTRY).orEmpty(),
+                        timezone = Timezone(tz),
+                        region = getStringOrNull(WeatherRoute.CityDetail.ARG_REGION)
+                            ?.takeIf { it.isNotBlank() },
+                    )
+                }
             }
-            CityDetailScreen(cityId = cityId.orEmpty())
+
+            if (city != null) {
+                CityDetailScreen(city = city)
+            } else {
+                Text("Город не найден")
+            }
         }
     }
 }

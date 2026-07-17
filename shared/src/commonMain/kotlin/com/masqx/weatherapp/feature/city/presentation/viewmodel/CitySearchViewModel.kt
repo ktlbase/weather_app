@@ -2,6 +2,7 @@ package com.masqx.weatherapp.feature.city.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.masqx.weatherapp.core.service.location.LocationService
 import com.masqx.weatherapp.feature.city.domain.repository.CitySearchRepository
 import com.masqx.weatherapp.feature.weather.domain.CityCurrentWeather
 import kotlinx.coroutines.FlowPreview
@@ -22,12 +23,14 @@ data class CitySearchUiState(
     val query: String = "",
     val results: List<CityCurrentWeather> = emptyList(),
     val isLoading: Boolean = false,
+    val isLocating: Boolean = false,
     val errorMessage: String? = null,
 )
 
 @OptIn(FlowPreview::class)
 class CitySearchViewModel(
     private val repository: CitySearchRepository,
+    private val locationService: LocationService,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CitySearchUiState())
     val uiState: StateFlow<CitySearchUiState> = _uiState.asStateFlow()
@@ -42,6 +45,46 @@ class CitySearchViewModel(
     fun onQueryChange(query: String) {
         _uiState.update { it.copy(query = query) }
         queryFlow.value = query
+    }
+
+    /** Определяет город по геолокации и подставляет его в поиск. Звать после выдачи permission. */
+    fun detectCity() {
+        if (_uiState.value.isLocating) return
+
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLocating = true, errorMessage = null) }
+
+            val coordinates = locationService.getCurrentLocation()
+            if (coordinates == null) {
+                _uiState.update {
+                    it.copy(
+                        isLocating = false,
+                        errorMessage = "Не удалось определить местоположение. Проверьте доступ к геолокации.",
+                    )
+                }
+                return@launch
+            }
+
+            val cityName = locationService.getCityName(coordinates)
+            if (cityName == null) {
+                _uiState.update {
+                    it.copy(
+                        isLocating = false,
+                        errorMessage = "Не удалось определить город по координатам.",
+                    )
+                }
+                return@launch
+            }
+
+            _uiState.update { it.copy(isLocating = false) }
+            onQueryChange(cityName)
+        }
+    }
+
+    fun onLocationPermissionDenied() {
+        _uiState.update {
+            it.copy(errorMessage = "Нет доступа к геолокации. Разрешите в настройках системы.")
+        }
     }
 
     private fun search(query: String) {

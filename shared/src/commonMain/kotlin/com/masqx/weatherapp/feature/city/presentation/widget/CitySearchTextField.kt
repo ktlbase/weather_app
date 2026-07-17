@@ -2,9 +2,11 @@ package com.masqx.weatherapp.feature.city.presentation.widget
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -18,6 +20,8 @@ fun CitySearchTextField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
+    isLocating: Boolean = false,
+    onLocationClick: (() -> Unit)? = null,
 ) {
     AppTextField(
         value = value,
@@ -32,16 +36,31 @@ fun CitySearchTextField(
                 modifier = Modifier.size(24.dp),
             )
         },
-        trailingContent = if (isLoading) {
-            {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(20.dp),
-                    strokeWidth = 2.dp,
-                    color = MaterialTheme.colorScheme.primary,
-                )
+        trailingContent = when {
+            isLoading || isLocating -> {
+                {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        strokeWidth = 2.dp,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                }
             }
-        } else {
-            null
+
+            onLocationClick != null -> {
+                {
+                    IconButton(onClick = onLocationClick) {
+                        Icon(
+                            imageVector = Icons.Filled.LocationOn,
+                            contentDescription = "Определить город по геолокации",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(24.dp),
+                        )
+                    }
+                }
+            }
+
+            else -> null
         },
     )
 }
@@ -49,7 +68,7 @@ fun CitySearchTextField(
 @Preview
 @Composable
 fun CitySearchTextFieldPreview() {
-    CitySearchTextField(value = "Moscow", onValueChange = {})
+    CitySearchTextField(value = "Moscow", onValueChange = {}, onLocationClick = {})
 }
 
 @Preview

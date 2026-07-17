@@ -53,9 +53,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import com.masqx.weatherapp.core.service.location.rememberLocationPermissionRequest
 import com.masqx.weatherapp.core.service.navigation.NavigationService
 import com.masqx.weatherapp.core.theme.AppTheme
 import com.masqx.weatherapp.core.theme.AppThemeTokens
+import com.masqx.weatherapp.feature.city.domain.entity.City
+import com.masqx.weatherapp.feature.weather.presentation.navigation.WeatherRoute
 import com.masqx.weatherapp.feature.city.presentation.viewmodel.CitySearchUiState
 import com.masqx.weatherapp.feature.city.presentation.viewmodel.CitySearchViewModel
 import com.masqx.weatherapp.feature.city.presentation.widget.CityCurrentWeatherCard
@@ -73,9 +76,17 @@ fun CitySearchScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    val requestLocationPermission = rememberLocationPermissionRequest { granted ->
+        if (granted) viewModel.detectCity() else viewModel.onLocationPermissionDenied()
+    }
+
     CitySearchScreenContent(
         uiState = uiState,
         onQueryChange = viewModel::onQueryChange,
+        onLocationClick = requestLocationPermission,
+        onCityClick = { city ->
+            navigationService.navigate(WeatherRoute.CityDetail.createRoute(city))
+        },
         onBack = { navigationService.popBackStack() },
     )
 }
@@ -85,6 +96,8 @@ fun CitySearchScreen(
 private fun CitySearchScreenContent(
     uiState: CitySearchUiState,
     onQueryChange: (String) -> Unit,
+    onLocationClick: () -> Unit,
+    onCityClick: (City) -> Unit,
     onBack: () -> Unit,
 ) {
     val listState = rememberLazyListState()
@@ -150,6 +163,8 @@ private fun CitySearchScreenContent(
                             value = uiState.query,
                             onValueChange = onQueryChange,
                             isLoading = uiState.isLoading,
+                            isLocating = uiState.isLocating,
+                            onLocationClick = onLocationClick,
                         )
 
                         AnimatedVisibility(
@@ -195,6 +210,7 @@ private fun CitySearchScreenContent(
                     ) {
                         CityCurrentWeatherCard(
                             cityWeather = result,
+                            onClick = { onCityClick(result.city) },
                             modifier = Modifier
                                 .padding(horizontal = AppThemeTokens.spacing.md)
                                 .animateItem(
@@ -289,6 +305,8 @@ private fun CitySearchScreenPreview() {
                 results = listOf(CityPreviewData.defaultCityWeather),
             ),
             onQueryChange = {},
+            onLocationClick = {},
+            onCityClick = {},
             onBack = {},
         )
     }
@@ -301,6 +319,8 @@ private fun CitySearchScreenEmptyPreview() {
         CitySearchScreenContent(
             uiState = CitySearchUiState(),
             onQueryChange = {},
+            onLocationClick = {},
+            onCityClick = {},
             onBack = {},
         )
     }
@@ -313,6 +333,8 @@ private fun CitySearchScreenLoadingPreview() {
         CitySearchScreenContent(
             uiState = CitySearchUiState(query = "Tok", isLoading = true),
             onQueryChange = {},
+            onLocationClick = {},
+            onCityClick = {},
             onBack = {},
         )
     }

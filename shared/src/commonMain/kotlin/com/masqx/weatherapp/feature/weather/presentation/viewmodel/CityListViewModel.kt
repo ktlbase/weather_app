@@ -46,6 +46,7 @@ class CityListViewModel(
     }
 
     fun onCityClick(cityId: String) {
-        navigationService.navigate(WeatherRoute.CityDetail.createRoute(cityId))
+        val city = _uiState.value.cities.firstOrNull { it.city.id.value == cityId }?.city ?: return
+        navigationService.navigate(WeatherRoute.CityDetail.createRoute(city))
     }
 }

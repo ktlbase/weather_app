@@ -3,12 +3,18 @@ package com.masqx.weatherapp.core.service.location
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.os.Build
 import android.os.Looper
 import androidx.core.content.ContextCompat
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
+import java.util.Locale
 import kotlin.coroutines.resume
 
 actual class LocationService(private val context: Context) {
@@ -43,5 +49,39 @@ actual class LocationService(private val context: Context) {
             manager.requestLocationUpdates(provider, 0L, 0f, listener, Looper.getMainLooper())
             cont.invokeOnCancellation { manager.removeUpdates(listener) }
         }
+    }
+
+    actual suspend fun getCityName(coordinates: Coordinates): String? {
+        if (!Geocoder.isPresent()) return null
+        val geocoder = Geocoder(context, Locale("ru"))
+
+        val address: Address? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            suspendCancellableCoroutine { cont ->
+                // Полный listener вместо SAM-лямбды: у лямбды onError остаётся default no-op,
+                // и при ошибке геокодера корутина зависла бы навсегда.
+                val listener = object : Geocoder.GeocodeListener {
+                    override fun onGeocode(addresses: MutableList<Address>) {
+                        if (cont.isActive) cont.resume(addresses.firstOrNull())
+                    }
+
+                    override fun onError(errorMessage: String?) {
+                        if (cont.isActive) cont.resume(null)
+                    }
+                }
+                geocoder.getFromLocation(coordinates.latitude, coordinates.longitude, 1, listener)
+            }
+        } else {
+            withContext(Dispatchers.IO) {
+                try {
+                    @Suppress("DEPRECATION")
+                    geocoder.getFromLocation(coordinates.latitude, coordinates.longitude, 1)
+                        ?.firstOrNull()
+                } catch (e: Exception) {
+                    null
+                }
+            }
+        }
+
+        return address?.locality ?: address?.subAdminArea ?: address?.adminArea
     }
 }
